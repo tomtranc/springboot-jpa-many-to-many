@@ -1,18 +1,18 @@
 package com.ttran.demo.model.entity;
 
+import com.ttran.demo.model.type.RoleType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Pattern;
@@ -22,8 +22,8 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "DEPARTMENT")
-public class DepartmentEntity extends BaseEntity {
+@Table(name = "ROLES")
+public class RoleEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
@@ -31,8 +31,7 @@ public class DepartmentEntity extends BaseEntity {
     @Column(nullable = false, updatable = false)
     private String id;
 
-    @NotEmpty
-    @Pattern(regexp = "^\\w+$")
-    private String name;
+    @Enumerated(EnumType.STRING)
+    private RoleType type;
 
 }

@@ -1,9 +1,9 @@
 package com.ttran.demo.rest;
 
-import com.ttran.demo.model.entity.EmployeeEntity;
-import com.ttran.demo.model.entity.DepartmentEntity;
-import com.ttran.demo.model.type.CustomerType;
-import com.ttran.demo.repo.schema.EmployeeRepo;
+import com.ttran.demo.model.entity.UserEntity;
+import com.ttran.demo.model.entity.RoleEntity;
+import com.ttran.demo.model.type.RoleType;
+import com.ttran.demo.repo.EmployeeRepo;
 import com.ttran.demo.rest.base.BaseRestController;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +22,11 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/rest")
-public class CustomerController extends BaseRestController {
+public class UserController extends BaseRestController {
     @Autowired private EmployeeRepo employeeRepo;
 
     @GetMapping(produces = MediaType.TEXT_PLAIN_VALUE)
@@ -34,15 +35,15 @@ public class CustomerController extends BaseRestController {
         return "Application is up at: http://" + InetAddress.getLocalHost().getHostAddress() + ":" + serverPort;
     }
 
-    @GetMapping(value = "/employee", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public List<EmployeeEntity> list(HttpServletRequest request) {
+    public List<UserEntity> list(HttpServletRequest request) {
         return employeeRepo.findAll();
     }
 
-    @PostMapping(value = "/employee", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/user", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public EmployeeEntity postEndpoint(@Valid @RequestBody EmployeeEntity dto, Errors errors) {
+    public UserEntity postEndpoint(@Valid @RequestBody UserEntity dto, Errors errors) {
         if (errors.hasErrors()) {
             final String errorMessage = getErrorMessage(errors.getAllErrors());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMessage);
@@ -50,26 +51,26 @@ public class CustomerController extends BaseRestController {
         return employeeRepo.save(dto);
     }
 
-    @GetMapping(value = "/employee/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/user/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<EmployeeEntity> findById(@PathVariable String id) {
-        EmployeeEntity EmployeeEntity = employeeRepo.findById(id)
+    public ResponseEntity<UserEntity> findById(@PathVariable String id) {
+        UserEntity UserEntity = employeeRepo.findById(id)
                 .orElseThrow(EntityNotFoundException::new);
-        return ResponseEntity.ok(EmployeeEntity);
+        return ResponseEntity.ok(UserEntity);
     }
 
-    @PutMapping(value = "/employee/{id}")
-    public EmployeeEntity putEndpoint(@PathVariable String id, @Valid @RequestBody EmployeeEntity dto) {
+    @PutMapping(value = "/user/{id}")
+    public UserEntity putEndpoint(@PathVariable String id, @Valid @RequestBody UserEntity dto) {
         // find and update only present fields
-        EmployeeEntity employee = employeeRepo.getReferenceById(id);
+        UserEntity employee = employeeRepo.getReferenceById(id);
         Optional.ofNullable(dto.getName()).ifPresent(employee::setName);
         Optional.ofNullable(dto.getDescription()).ifPresent(employee::setDescription);
-        Optional.ofNullable(dto.getDepartmentMap()).ifPresent(employee::setDepartmentMap);
+        Optional.ofNullable(dto.getRoles()).ifPresent(employee::setRoles);
 
         return employeeRepo.save(employee);
     }
 
-    @DeleteMapping(value = "/employee/{id}", produces = MediaType.TEXT_PLAIN_VALUE)
+    @DeleteMapping(value = "/user/{id}", produces = MediaType.TEXT_PLAIN_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public void deleteEndpoint(@PathVariable String id) {
         employeeRepo.deleteById(id);
@@ -77,30 +78,24 @@ public class CustomerController extends BaseRestController {
 
     @PutMapping(value = "/init")
     public ResponseEntity<?> populateData() {
-        DepartmentEntity d1 = DepartmentEntity.builder().name("department1").build();
-        DepartmentEntity d2 = DepartmentEntity.builder().name("department2").build();
-        DepartmentEntity d3 = DepartmentEntity.builder().name("department3").build();
-        DepartmentEntity d4 = DepartmentEntity.builder().name("department4").build();
+        RoleEntity viewer = RoleEntity.builder().type(RoleType.VIEWER).build();
+        RoleEntity editor = RoleEntity.builder().type(RoleType.EDITOR).build();
+        RoleEntity admin = RoleEntity.builder().type(RoleType.ADMIN).build();
+        RoleEntity superAdmin = RoleEntity.builder().type(RoleType.SUPER_ADMIN).build();
 
-        EmployeeEntity c1 = EmployeeEntity.builder()
-                .name("customer1")
+        UserEntity user1 = UserEntity.builder()
+                .name("user1")
                 .description("desc 1")
-                .departmentMap(Map.of(
-                        CustomerType.FULL_TIME, d1,
-                        CustomerType.PART_TIME, d2
-                ))
+                .roles(Set.of(viewer))
                 .build();
 
-        EmployeeEntity c2 = EmployeeEntity.builder()
-                .name("customer2")
+        UserEntity user2 = UserEntity.builder()
+                .name("user2")
                 .description("desc 2")
-                .departmentMap(Map.of(
-                        CustomerType.PART_TIME, d3,
-                        CustomerType.FULL_TIME, d4
-                ))
+                .roles(Set.of(admin))
                 .build();
 
-        employeeRepo.saveAll(List.of(c1, c2));
+        employeeRepo.saveAll(List.of(user1, user2));
 
         return ResponseEntity.ok(employeeRepo.findAll());
     }

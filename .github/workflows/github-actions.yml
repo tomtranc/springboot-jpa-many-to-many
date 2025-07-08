@@ -1,8 +1,12 @@
 name: GitHub Actions
 run-name: ${{ github.actor }} building and testing project
-on: [push]
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 jobs:
-  CI:
+  build:
     runs-on: ubuntu-latest
     env:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
@@ -26,7 +30,7 @@ jobs:
           git log --oneline -n 3
           java --version
           mvn --version
-          mvn clean package
+          mvn -B clean package
           echo "${{ secrets.DB_PASSWORD }}" | base64 --decode
           ls ${{ github.workspace }}
           

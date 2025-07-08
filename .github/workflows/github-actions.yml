@@ -18,12 +18,11 @@ jobs:
           distribution: 'oracle'  # or 'zulu', 'microsoft', etc.
           java-version: '21'
           cache: 'maven'
-          set-default: true
       
-      - name: Set up Maven
-        uses: s4u/setup-maven-action@v1.18.0
-        with:
-          maven-version: '3.9.6'  # Or whichever version you need
+      # - name: Set up Maven
+      #   uses: s4u/setup-maven-action@v1.18.0
+      #   with:
+      #     maven-version: '3.9.6'  # Or whichever version you need
       
       - name: Build project
         run: |

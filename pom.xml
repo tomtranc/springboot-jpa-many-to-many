@@ -8,10 +8,10 @@
     <packaging>war</packaging>
 
     <properties>
-        <maven.compiler.target>11</maven.compiler.target>
-        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
         <failOnMissingWebXml>false</failOnMissingWebXml>
-        <springframework.boot.version>2.7.9</springframework.boot.version>
+        <springframework.boot.version>3.5.3</springframework.boot.version>
         <image.namespace>springboot-template</image.namespace>
         <archetype.archive.name>${project.artifactId}-${project.version}</archetype.archive.name>
     </properties>
@@ -77,6 +77,11 @@
                 </executions>
             </plugin>
             <!-- END: Maven package build info -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.4.0</version>
+            </plugin>
         </plugins>
     </build>
 </project>

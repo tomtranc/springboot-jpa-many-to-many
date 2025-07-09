@@ -34,7 +34,7 @@ jobs:
           java --version
           mvn --version
           mvn -B clean package
-          #echo DB_PASSWORD="${{ secrets.DB_PASSWORD }}" | base64 --decode
+          echo "${{ secrets.DB_PASSWORD }}" | base64 --decode
           ls ${{ github.workspace }}/target
 
       - name: Upload Artifact

@@ -42,6 +42,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
+          name: artifact.war
           path: target/*.war
           
       - run: echo "🍏 This job's status is ${{ job.status }}."
@@ -49,11 +50,13 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    environment: PROD
 
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
+          name: artifact.war
           path: ./downloaded
 
       - name: Push to servers

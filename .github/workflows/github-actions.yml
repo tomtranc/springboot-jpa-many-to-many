@@ -1,5 +1,5 @@
 name: GitHub Actions
-run-name: ${{ github.actor }} building and testing project
+run-name: ${{ github.actor }} building ${{ github.repository }} project
 on:
   push:
     branches: [ "main" ]
@@ -33,5 +33,11 @@ jobs:
           mvn -B clean package
           echo "${{ secrets.DB_PASSWORD }}" | base64 --decode
           ls ${{ github.workspace }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.repository }}.jar
+          path: target/*.jar
           
       - run: echo "🍏 This job's status is ${{ job.status }}."

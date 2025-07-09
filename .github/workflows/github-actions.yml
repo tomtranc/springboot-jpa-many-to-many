@@ -36,6 +36,7 @@ jobs:
           mvn --version
           mvn -B clean package
           echo "${{ secrets.DB_PASSWORD }}"
+          env
           ls ${{ github.workspace }}/target
 
       - name: Upload Artifact

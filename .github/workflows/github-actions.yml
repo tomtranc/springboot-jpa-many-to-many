@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: PROD
     env:
       DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
     steps:
@@ -34,7 +35,7 @@ jobs:
           java --version
           mvn --version
           mvn -B clean package
-          echo "${{ secrets.DB_PASSWORD }}" | base64 --decode
+          echo "${{ secrets.DB_PASSWORD }}"
           ls ${{ github.workspace }}/target
 
       - name: Upload Artifact

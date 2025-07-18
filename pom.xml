@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ttran.template</groupId>
-    <artifactId>springboot-example</artifactId>
+    <artifactId>springboot-ttran</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
 
@@ -12,7 +12,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <failOnMissingWebXml>false</failOnMissingWebXml>
         <springframework.boot.version>3.5.3</springframework.boot.version>
-        <image.namespace>springboot-template</image.namespace>
+        <image.namespace>github.io/tomtranc/springboot-jpa-many-to-many</image.namespace>
         <archetype.archive.name>${project.artifactId}-${project.version}</archetype.archive.name>
     </properties>
 
@@ -40,6 +40,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -88,6 +92,31 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.4.0</version>
+            </plugin>
+            <!-- Docker build -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>exec</goal></goals>
+                        <configuration>
+                            <!-- this builds multi-platform image, refer to https://docs.docker.com/build/building/multi-platform/ -->
+                            <executable>docker</executable>
+                            <arguments>
+                                <argument>buildx</argument>
+                                <argument>build</argument>
+                                <argument>--platform</argument>
+                                <argument>linux/arm64,linux/amd64</argument>
+                                <argument>-t</argument>
+                                <argument>${image.namespace}</argument>
+                                <argument>.</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

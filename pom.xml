@@ -94,30 +94,30 @@
                 <version>3.4.0</version>
             </plugin>
             <!-- Docker build -->
-            <!-- <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals><goal>exec</goal></goals>
-                        <configuration>
-                            <!-- this builds multi-platform image, refer to https://docs.docker.com/build/building/multi-platform/ -->
-                            <executable>docker</executable>
-                            <arguments>
-                                <argument>buildx</argument>
-                                <argument>build</argument>
-                                <argument>--platform</argument>
-                                <argument>linux/arm64,linux/amd64</argument>
-                                <argument>-t</argument>
-                                <argument>${image.namespace}</argument>
-                                <argument>.</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin> -->
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.mojo</groupId>-->
+<!--                <artifactId>exec-maven-plugin</artifactId>-->
+<!--                <version>3.1.0</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals><goal>exec</goal></goals>-->
+<!--                        <configuration>-->
+<!--                            &lt;!&ndash; this builds multi-platform image, refer to https://docs.docker.com/build/building/multi-platform/ &ndash;&gt;-->
+<!--                            <executable>docker</executable>-->
+<!--                            <arguments>-->
+<!--                                <argument>buildx</argument>-->
+<!--                                <argument>build</argument>-->
+<!--                                <argument>&#45;&#45;platform</argument>-->
+<!--                                <argument>linux/arm64,linux/amd64</argument>-->
+<!--                                <argument>-t</argument>-->
+<!--                                <argument>${image.namespace}</argument>-->
+<!--                                <argument>.</argument>-->
+<!--                            </arguments>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 </project>

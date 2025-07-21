@@ -12,7 +12,7 @@ variables:
   imageRepository: 'springboot-jpa-many-to-many/multiarch'
   containerRegistry: 'ttran-a9bufhazdagrd7hy.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-  imageTag: 'springboot-jpa-many-to-many/multiarch:$(Build.BuildId)'
+  imageTag: '$(Build.BuildId)'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'

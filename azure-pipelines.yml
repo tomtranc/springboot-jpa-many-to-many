@@ -10,6 +10,11 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- task: DockerInstaller@0
+  displayName: 'Install Docker'
+  inputs:
+    dockerVersion: 'latest'
+    
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
@@ -20,3 +25,4 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
+

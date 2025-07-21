@@ -10,11 +10,6 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: DockerInstaller@0
-  displayName: 'Install Docker'
-  inputs:
-    dockerVersion: 'latest'
-    
 - task: Maven@3
   inputs:
     mavenPomFile: 'pom.xml'
@@ -26,3 +21,8 @@ steps:
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'package'
 
+- task: Docker@2
+  inputs:
+    command: 'build' # 'buildAndPush' | 'build' | 'push' | 'login' | 'logout' | 'start' | 'stop'. Required. Command. Default: buildAndPush.
+    Dockerfile: '**/Dockerfile' # string. Required when command = build || command = buildAndPush. Dockerfile. Default: **/Dockerfile.
+    tags: 'github.io/tomtranc/springboot-jpa-many-to-many:$(Build.BuildId)'

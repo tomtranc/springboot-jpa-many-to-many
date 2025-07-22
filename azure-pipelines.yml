@@ -7,14 +7,15 @@ trigger:
 - main
 
 variables:
+  # Agent VM info
+  vmImageName: 'ubuntu-latest'
+  currentDate: $[ format('{0:yyyy}.{0:MM}.{0:dd}', pipeline.startTime) ]
+
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'ttranPipeline-sc'
-  imageRepository: 'ttran-a9bufhazdagrd7hy.azurecr.io/springboot-jpa-many-to-many/amd64'
+  imageRepository: 'ttran-a9bufhazdagrd7hy.azurecr.io/springboot-jpa-many-to-many'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-  imageTag: '$(Build.BuildId)'
-
-  # Agent VM image name
-  vmImageName: 'ubuntu-latest'
+  imageTag: '$(currentDate)-$(Build.SourceBranchName)+$(Build.SourceVersion)'
 
 stages:
   - stage: Build

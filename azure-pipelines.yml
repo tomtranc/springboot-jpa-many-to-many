@@ -8,7 +8,7 @@ trigger:
 
 variables:
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'ttranPipeline-sp'
+  dockerRegistryServiceConnection: 'ttranPipeline-sc'
   imageRepository: 'ttran-a9bufhazdagrd7hy.azurecr.io/springboot-jpa-many-to-many/amd64'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   imageTag: '$(Build.BuildId)'
@@ -45,3 +45,7 @@ stages:
               Dockerfile: $(dockerfilePath) # string. Required when command = build || command = buildAndPush. Dockerfile. Default: **/Dockerfile.
               tags: |
                 $(imageTag)
+
+          - script: |
+              ls -ltr
+                

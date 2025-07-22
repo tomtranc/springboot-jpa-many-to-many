@@ -17,7 +17,7 @@ variables:
   vmImageName: 'ubuntu-latest'
 
 stages:
-  - stage: Build
+  - stage: Build and Push
     displayName: Build and push stage
     jobs:
       - job: Build
@@ -48,4 +48,10 @@ stages:
 
           - script: |
               ls -ltr
-                
+
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish Artifact'
+            condition: succeeded() # The condition argument specifies to run the task only when the previous task succeeds.
+            inputs:
+              pathToPublish: '$(System.DefaultWorkingDirectory)/target/*.war'
+              artifactName: 'ttranapp'

@@ -8,9 +8,8 @@ trigger:
 
 variables:
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: '8e0408ae-1bfb-46bd-8cc9-763f8c71df13'
-  imageRepository: 'springboot-jpa-many-to-many/multiarch'
-  containerRegistry: 'ttran-a9bufhazdagrd7hy.azurecr.io'
+  dockerRegistryServiceConnection: 'ttranPipeline-sp'
+  imageRepository: 'ttran-a9bufhazdagrd7hy.azurecr.io/springboot-jpa-many-to-many/amd64'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   imageTag: '$(Build.BuildId)'
 
@@ -41,6 +40,7 @@ stages:
             displayName: Build and push an image to container registry
             inputs:
               command: 'buildAndPush' # 'buildAndPush' | 'build' | 'push' | 'login' | 'logout' | 'start' | 'stop'. Required. Command. Default: buildAndPush.
+              containerRegistry: $(dockerRegistryServiceConnection)
               repository: $(imageRepository)
               Dockerfile: $(dockerfilePath) # string. Required when command = build || command = buildAndPush. Dockerfile. Default: **/Dockerfile.
               tags: |

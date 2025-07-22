@@ -49,6 +49,8 @@ stages:
 
           - script: |
               ls -ltr
+              ls -ltr target/
+              ls -ltr $(System.DefaultWorkingDirectory)/target/*.war
 
           - task: PublishBuildArtifacts@1
             displayName: 'Publish Artifact'

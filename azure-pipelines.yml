@@ -48,14 +48,15 @@ stages:
                 $(imageTag)
 
           - bash: |
+              WAR_FILE=$(ls target/*.war | head -n 1)
+              cp "$WAR_FILE" target/artifact.war
               ls -ltr
               ls -ltr target/
-              ls -ltr $(System.DefaultWorkingDirectory)/target/*.war
-            displayName: View filesystem
+            displayName: Prepare artifact
 
           - task: PublishBuildArtifacts@1
             displayName: 'Publish Artifact'
             condition: succeeded() # The condition argument specifies to run the task only when the previous task succeeds.
             inputs:
-              pathToPublish: '$(System.DefaultWorkingDirectory)/target/*.war'
+              pathToPublish: '$(System.DefaultWorkingDirectory)/target/artifact.war' # wildcard are not supported
               artifactName: 'ttranapp'

@@ -15,7 +15,7 @@ variables:
   dockerRegistryServiceConnection: 'ttranPipeline-sc'
   imageRepository: 'ttran-a9bufhazdagrd7hy.azurecr.io/springboot-jpa-many-to-many'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
-  imageTag: '$(currentDate)-$(Build.SourceBranchName)+$(Build.SourceVersion)'
+  imageTag: '$(currentDate)-$(Build.SourceBranchName)-$(Build.SourceVersion)'
 
 stages:
   - stage: Build
@@ -47,10 +47,11 @@ stages:
               tags: |
                 $(imageTag)
 
-          - script: |
+          - bash: |
               ls -ltr
               ls -ltr target/
               ls -ltr $(System.DefaultWorkingDirectory)/target/*.war
+            displayName: View filesystem
 
           - task: PublishBuildArtifacts@1
             displayName: 'Publish Artifact'

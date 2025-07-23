@@ -15,8 +15,9 @@ variables:
   dockerRegistryServiceConnection: 'ttranPipeline-sc'
   imageRegistry: 'ttran-a9bufhazdagrd7hy.azurecr.io'
   imageRepository: 'springboot-jpa-many-to-many'
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   imageTag: '$(currentDate)-$(Build.SourceBranchName)-$(Build.SourceVersion)'
+  imageName: '$(imageRepository)/$(imageTag)'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
 
 stages:
   - stage: Build
@@ -50,7 +51,7 @@ stages:
 
           - bash: |
               docker images
-              docker save -o target/image.tar $(imageRegistry)/$(imageRepository):$(imageTag)
+              docker save -o target/image.tar $(imageName):$(imageTag)
               ls -ltr
               ls -ltr target/
             displayName: Prepare image artifact
@@ -79,22 +80,21 @@ stages:
           runOnce:
             deploy:
               steps:
-#                - download: current
-#                  artifact: drop
+                - download: current
+                  artifact: drop
                 - script: |
                     hostname
-                    image_name="$(imageRepository):$(imageTag)"
                     container_name="app"
   
                     # Login to Azure Container Registry (if not already logged in)
-                    # az acr login --name $(imageRegistry)
+                     az acr login --name $(imageRegistry)
   
                     # Stop and remove the existing container (if it exists)
                     docker stop $container_name || true
                     docker rm $container_name || true
   
                     # Pull the latest image from ACR
-                    docker pull $image_name
+                    docker pull $(imageName)
   
                     # Run the new container
-                    docker run --name $container_name -d -p 8080:8080 $(imageRepository):$(imageTag)
+                    docker run --name $container_name -d -p 8080:8080 $(imageName)

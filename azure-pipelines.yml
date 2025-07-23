@@ -7,17 +7,18 @@ trigger:
 - main
 
 variables:
+  # shared variables
+  - group: ttran-release
   # Agent VM info
-  vmImageName: 'ubuntu-latest'
-  currentDate: $[ format('{0:yyyy}.{0:MM}.{0:dd}', pipeline.startTime) ]
-
+  - vmImageName: 'ubuntu-latest'
+  - nane: currentDate
+    value: $[ format('{0:yyyy}.{0:MM}.{0:dd}', pipeline.startTime) ] # cannot use this expression for short form vars
   # Container registry service connection established during pipeline creation
-  containerRegistryServiceConnection: 'ttranPipeline-sc'
-  containerRegistry: '$(CONTAINER_REGISTRY)'
-  imageRepository: 'springboot-jpa-many-to-many'
-  imageTag: '$(currentDate)-$(Build.SourceBranchName)-$(Build.SourceVersion)'
-  imageName: '$(imageRepository)/$(imageTag)'
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  - containerRegistryServiceConnection: 'ttranPipeline-sc'
+  - imageRepository: 'springboot-jpa-many-to-many'
+  - imageTag: '$(currentDate)-$(Build.SourceBranchName)-$(Build.SourceVersion)'
+  - imageName: '$(imageRepository)/$(imageTag)'
+  - dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
 
 stages:
   - stage: Build
@@ -51,7 +52,7 @@ stages:
 
           - bash: |
               docker images
-              docker save -o target/image.tar $(containerRegistry)/$(imageName)
+              docker save -o target/image.tar $(CONTAINER_REGISTRY)/$(imageName)
               ls -ltr
               ls -ltr target/
             displayName: Prepare image artifact
@@ -75,8 +76,6 @@ stages:
           name: dev
           resourceType: VirtualMachine
           tags: web1
-        variables:
-          - group: ttran-release
         strategy:
           runOnce:
             deploy:

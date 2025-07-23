@@ -50,6 +50,7 @@ stages:
 
           - bash: |
               docker images
+              echo "image to save: $(imageRepository):$(imageTag)"
               docker save -o target/artifact.tar $(imageRepository):$(imageTag)
               ls -ltr
               ls -ltr target/

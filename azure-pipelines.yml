@@ -12,7 +12,7 @@ variables:
   # Agent VM info
   - name: vmImageName
     value: 'ubuntu-latest'
-  - nane: currentDate
+  - name: currentDate
     value: $[ format('{0:yyyy}.{0:MM}.{0:dd}', pipeline.startTime) ] # cannot use this expression for short form vars
   # Container registry service connection established during pipeline creation
   - name: containerRegistryServiceConnection

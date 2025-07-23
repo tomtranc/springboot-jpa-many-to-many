@@ -51,7 +51,7 @@ stages:
 
           - bash: |
               docker images
-              docker save -o target/image.tar $(imageName)
+              docker save -o target/image.tar $(imageRepository)/$(imageName)
               ls -ltr
               ls -ltr target/
             displayName: Prepare image artifact
@@ -66,6 +66,7 @@ stages:
   - stage: Deploy
     displayName: Deploy to environment
     dependsOn: Build
+    condition: succeeded()
     jobs:
       - deployment: Deployment
         pool:

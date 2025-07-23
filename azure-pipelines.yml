@@ -10,15 +10,21 @@ variables:
   # shared variables
   - group: ttran-release
   # Agent VM info
-  - vmImageName: 'ubuntu-latest'
+  - name: vmImageName
+    value: 'ubuntu-latest'
   - nane: currentDate
     value: $[ format('{0:yyyy}.{0:MM}.{0:dd}', pipeline.startTime) ] # cannot use this expression for short form vars
   # Container registry service connection established during pipeline creation
-  - containerRegistryServiceConnection: 'ttranPipeline-sc'
-  - imageRepository: 'springboot-jpa-many-to-many'
-  - imageTag: '$(currentDate)-$(Build.SourceBranchName)-$(Build.SourceVersion)'
-  - imageName: '$(imageRepository)/$(imageTag)'
-  - dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  - name: containerRegistryServiceConnection
+    value: 'ttranPipeline-sc'
+  - name: imageRepository
+    value: 'springboot-jpa-many-to-many'
+  - name: imageTag
+    value: '$(currentDate)-$(Build.SourceBranchName)-$(Build.SourceVersion)'
+  - name: imageName
+    value: '$(imageRepository)/$(imageTag)'
+  - name: dockerfilePath
+    value: '$(Build.SourcesDirectory)/Dockerfile'
 
 stages:
   - stage: Build

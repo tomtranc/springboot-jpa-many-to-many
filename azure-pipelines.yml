@@ -13,7 +13,7 @@ variables:
 
   # Container registry service connection established during pipeline creation
   containerRegistryServiceConnection: 'ttranPipeline-sc'
-  containerRegistry: '$(ContainerRegistry)'
+  containerRegistry: '$(CONTAINER_REGISTRY)'
   imageRepository: 'springboot-jpa-many-to-many'
   imageTag: '$(currentDate)-$(Build.SourceBranchName)-$(Build.SourceVersion)'
   imageName: '$(imageRepository)/$(imageTag)'

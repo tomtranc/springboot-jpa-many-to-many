@@ -14,7 +14,7 @@ variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'ttranPipeline-sc'
   imageRegistry: 'ttran-a9bufhazdagrd7hy.azurecr.io'
-  imageRepository: '$(imageRegistry)/springboot-jpa-many-to-many'
+  imageRepository: 'springboot-jpa-many-to-many'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   imageTag: '$(currentDate)-$(Build.SourceBranchName)-$(Build.SourceVersion)'
 

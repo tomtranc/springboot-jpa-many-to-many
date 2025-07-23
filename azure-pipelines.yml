@@ -49,6 +49,7 @@ stages:
                 $(imageTag)
 
           - bash: |
+              docker images
               docker save -o target/artifact.tar $(imageRepository):$(imageTag)
               ls -ltr
               ls -ltr target/
@@ -68,7 +69,10 @@ stages:
       - deployment: Deploy
         pool:
           vmImage: $(vmImageName)
-        environment: dev
+        environment:
+          name: dev
+          resourceType: VirtualMachine
+          tags: web1
         variables:
           - group: ttran-release
         strategy:
@@ -77,23 +81,20 @@ stages:
               steps:
                 - download: current
                   artifact: drop
-                - task: SSH@0
-                  inputs:
-                    runOptions: 'inline'
-                    inline: |
-                      image_name="$(imageRepository):$(imageTag)"
-                      container_name="app"
-
-                      # Login to Azure Container Registry (if not already logged in)
-                      # az acr login --name $(imageRegistry)
-
-                      # Stop and remove the existing container (if it exists)
-                      docker stop $container_name || true
-                      docker rm $container_name || true
-
-                      # Pull the latest image from ACR
-                      docker pull $image_name
-
-                      # Run the new container
-                      docker run --name $container_name -d -p 8080:8080 $(imageRepository):$(imageTag)
-                    readyTimeout: '20000'
+                - script: |
+                    hostname
+                    image_name="$(imageRepository):$(imageTag)"
+                    container_name="app"
+  
+                    # Login to Azure Container Registry (if not already logged in)
+                    # az acr login --name $(imageRegistry)
+  
+                    # Stop and remove the existing container (if it exists)
+                    docker stop $container_name || true
+                    docker rm $container_name || true
+  
+                    # Pull the latest image from ACR
+                    docker pull $image_name
+  
+                    # Run the new container
+                    docker run --name $container_name -d -p 8080:8080 $(imageRepository):$(imageTag)

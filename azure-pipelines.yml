@@ -12,8 +12,8 @@ variables:
   currentDate: $[ format('{0:yyyy}.{0:MM}.{0:dd}', pipeline.startTime) ]
 
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'ttranPipeline-sc'
-  imageRegistry: 'ttran-a9bufhazdagrd7hy.azurecr.io'
+  containerRegistryServiceConnection: 'ttranPipeline-sc'
+  containerRegistry: '$(ContainerRegistry)'
   imageRepository: 'springboot-jpa-many-to-many'
   imageTag: '$(currentDate)-$(Build.SourceBranchName)-$(Build.SourceVersion)'
   imageName: '$(imageRepository)/$(imageTag)'
@@ -43,7 +43,7 @@ stages:
             displayName: Build and push an image to container registry
             inputs:
               command: 'buildAndPush' # 'buildAndPush' | 'build' | 'push' | 'login' | 'logout' | 'start' | 'stop'. Required. Command. Default: buildAndPush.
-              containerRegistry: $(dockerRegistryServiceConnection)
+              containerRegistry: $(containerRegistryServiceConnection)
               repository: $(imageRepository)
               Dockerfile: $(dockerfilePath) # string. Required when command = build || command = buildAndPush. Dockerfile. Default: **/Dockerfile.
               tags: |
@@ -51,7 +51,7 @@ stages:
 
           - bash: |
               docker images
-              docker save -o target/image.tar $(imageRepository)/$(imageName)
+              docker save -o target/image.tar $(containerRegistry)/$(imageName)
               ls -ltr
               ls -ltr target/
             displayName: Prepare image artifact
@@ -89,7 +89,7 @@ stages:
   
                     # Login to Azure Container Registry (if not already logged in)
                     az login --identity
-                    az acr login --name $(imageRegistry)
+                    az acr login --name $(containerRegistry)
   
                     # Stop and remove the existing container (if it exists)
                     docker stop $container_name || true

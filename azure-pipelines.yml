@@ -30,7 +30,7 @@ stages:
           - task: Maven@3
             inputs:
               mavenPomFile: 'pom.xml'
-              mavenOptions: '-Xmx3072m'
+              mavenOptions: '-Xmx3072m -B'
               javaHomeOption: 'JDKVersion'
               jdkVersionOption: '1.21'
               jdkArchitectureOption: 'x64'
@@ -49,19 +49,17 @@ stages:
                 $(imageTag)
 
           - bash: |
-              docker tag $(imageRegistry)/$(imageRepository):$(imageTag) $(imageRepository):$(imageTag)
               docker images
-              echo "image to save: $(imageRegistry)/$(imageRepository):$(imageTag)"
-              docker save -o target/artifact.tar $(imageRegistry)/$(imageRepository):$(imageTag)
+              docker save -o target/image.tar $(imageRegistry)/$(imageRepository):$(imageTag)
               ls -ltr
               ls -ltr target/
             displayName: Prepare image artifact
 
           - task: PublishBuildArtifacts@1
-            displayName: 'Publish Artifact'
+            displayName: 'Publish Image Artifact'
             condition: succeeded() # The condition argument specifies to run the task only when the previous task succeeds.
             inputs:
-              pathToPublish: '$(System.DefaultWorkingDirectory)/target/artifact.tar' # wildcard are not supported
+              pathToPublish: '$(System.DefaultWorkingDirectory)/target/image.tar' # wildcard are not supported
 #              artifactName: 'ttranapp' # default artifact name is 'drop'
 
   - stage: Deploy
@@ -81,8 +79,8 @@ stages:
           runOnce:
             deploy:
               steps:
-                - download: current
-                  artifact: drop
+#                - download: current
+#                  artifact: drop
                 - script: |
                     hostname
                     image_name="$(imageRepository):$(imageTag)"

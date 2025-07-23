@@ -13,13 +13,14 @@ variables:
 
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'ttranPipeline-sc'
-  imageRepository: 'ttran-a9bufhazdagrd7hy.azurecr.io/springboot-jpa-many-to-many'
+  imageRegistry: 'ttran-a9bufhazdagrd7hy.azurecr.io'
+  imageRepository: '$(imageRegistry)/springboot-jpa-many-to-many'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   imageTag: '$(currentDate)-$(Build.SourceBranchName)-$(Build.SourceVersion)'
 
 stages:
   - stage: Build
-    displayName: Build and push stage
+    displayName: Build and push image
     jobs:
       - job: Build
         displayName: Build
@@ -48,7 +49,7 @@ stages:
                 $(imageTag)
 
           - bash: |
-              docker save -o target/$(Pipeline.Workspace)/artifact.tar $(imageRepository):$(imageTag)
+              docker save -o target/artifact.tar $(imageRepository):$(imageTag)
               ls -ltr
               ls -ltr target/
             displayName: Prepare image artifact
@@ -58,4 +59,41 @@ stages:
             condition: succeeded() # The condition argument specifies to run the task only when the previous task succeeds.
             inputs:
               pathToPublish: '$(System.DefaultWorkingDirectory)/target/artifact.tar' # wildcard are not supported
-              artifactName: 'ttranapp'
+#              artifactName: 'ttranapp' # default artifact name is 'drop'
+
+  - stage: Deploy
+    displayName: Deploy to environment
+    dependsOn: Build
+    jobs:
+      - deployment: Deploy
+        pool:
+          vmImage: $(vmImageName)
+        environment: dev
+        variables:
+          - group: ttran-release
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: drop
+                - task: SSH@0
+                  inputs:
+                    runOptions: 'inline'
+                    inline: |
+                      image_name="$(imageRepository):$(imageTag)"
+                      container_name="app"
+
+                      # Login to Azure Container Registry (if not already logged in)
+                      # az acr login --name $(imageRegistry)
+
+                      # Stop and remove the existing container (if it exists)
+                      docker stop $container_name || true
+                      docker rm $container_name || true
+
+                      # Pull the latest image from ACR
+                      docker pull $image_name
+
+                      # Run the new container
+                      docker run --name $container_name -d -p 8080:8080 $(imageRepository):$(imageTag)
+                    readyTimeout: '20000'

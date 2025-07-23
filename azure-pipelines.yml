@@ -49,9 +49,10 @@ stages:
                 $(imageTag)
 
           - bash: |
+              docker tag $(imageRegistry)/$(imageRepository):$(imageTag) $(imageRepository):$(imageTag)
               docker images
-              echo "image to save: $(imageRepository):$(imageTag)"
-              docker save -o target/artifact.tar $(imageRepository):$(imageTag)
+              echo "image to save: $(imageRegistry)/$(imageRepository):$(imageTag)"
+              docker save -o target/artifact.tar $(imageRegistry)/$(imageRepository):$(imageTag)
               ls -ltr
               ls -ltr target/
             displayName: Prepare image artifact

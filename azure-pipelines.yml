@@ -51,7 +51,7 @@ stages:
 
           - bash: |
               docker images
-              docker save -o target/image.tar $(imageName):$(imageTag)
+              docker save -o target/image.tar $(imageName)
               ls -ltr
               ls -ltr target/
             displayName: Prepare image artifact

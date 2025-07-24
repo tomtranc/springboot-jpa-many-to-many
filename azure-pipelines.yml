@@ -22,7 +22,7 @@ variables:
   - name: imageTag
     value: '$(currentDate)-$(Build.SourceBranchName)-$(Build.SourceVersion)'
   - name: imageName
-    value: '$(imageRepository)/$(imageTag)'
+    value: '$(imageRepository):$(imageTag)'
   - name: dockerfilePath
     value: '$(Build.SourcesDirectory)/Dockerfile'
 
@@ -57,9 +57,8 @@ stages:
                 $(imageTag)
 
           - bash: |
-              docker tag $(CONTAINER_REGISTRY)/$(imageName) $(imageName) # need to re-tag due to weird registry masking value issue
               docker images
-              docker save -o target/image.tar $(imageName)
+              docker save -o target/image.tar $(CONTAINER_REGISTRY)/$(imageName)
               ls -ltr
               ls -ltr target/
             displayName: Prepare image artifact

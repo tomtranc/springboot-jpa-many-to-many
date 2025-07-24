@@ -57,8 +57,9 @@ stages:
                 $(imageTag)
 
           - bash: |
+              docker tag $(CONTAINER_REGISTRY)/$(imageName) $(imageName) # need to re-tag due to weird registry masking value issue
               docker images
-              docker save -o target/image.tar $(CONTAINER_REGISTRY)/$(imageName)
+              docker save -o target/image.tar $(imageName)
               ls -ltr
               ls -ltr target/
             displayName: Prepare image artifact

@@ -94,7 +94,7 @@ stages:
   
                     # Login to Azure Container Registry (if not already logged in)
                     az login --identity
-                    az acr login --name $(containerRegistry)
+                    az acr login --name $(CONTAINER_REGISTRY)
   
                     # Stop and remove the existing container (if it exists)
                     docker stop $container_name || true

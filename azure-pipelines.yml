@@ -22,7 +22,7 @@ variables:
   - name: imageTag
     value: '$(currentDate)-$(Build.SourceBranchName)-$(Build.SourceVersion)'
   - name: imageName
-    value: '$(imageRepository):$(imageTag)'
+    value: '$(CONTAINER_REGISTRY)/$(imageRepository):$(imageTag)'
   - name: dockerfilePath
     value: '$(Build.SourcesDirectory)/Dockerfile'
 
@@ -58,7 +58,7 @@ stages:
 
           - bash: |
               docker images
-              docker save -o target/image.tar $(CONTAINER_REGISTRY)/$(imageName)
+              docker save -o target/image.tar $(imageName)
               ls -ltr
               ls -ltr target/
             displayName: Prepare image artifact
@@ -94,7 +94,7 @@ stages:
   
                     # Login to Azure Container Registry (if not already logged in)
                     az login --identity
-                    az acr login --name $(CONTAINER_REGISTRY)
+                    az acr login --name $(imageName)
                     
                     # Pull the latest image from ACR
                     docker pull $(imageName)

@@ -15,6 +15,8 @@ variables:
   - name: currentDate
     value: $[ format('{0:yyyy}.{0:MM}.{0:dd}', pipeline.startTime) ] # cannot use this expression for short form vars
   # Container registry service connection established during pipeline creation
+  - name: azureServiceConnection
+    value: 'arm-subscription-sc'
   - name: containerRegistryServiceConnection
     value: 'ttranPipeline-sc'
   - name: imageRepository
@@ -94,7 +96,7 @@ stages:
   
                     # Login to Azure Container Registry (if not already logged in)
                     az login --identity
-                    az acr login --name $(imageName)
+                    az acr login --name $(CONTAINER_REGISTRY)
                     
                     # Pull the latest image from ACR
                     docker pull $(imageName)
@@ -105,3 +107,16 @@ stages:
   
                     # Run the new container
                     docker run --name $container_name -d -p 8080:8080 $(imageName)
+
+      - job: DeployContainerApp
+        displayName: Deploy to ACA
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: AzureContainerApps@1
+            displayName: Deploy Azure Container App
+            inputs:
+              azureSubscription: $(azureServiceConnection) # Azure ARM service connection
+              containerAppName: $(AZURE_ACA_NAME)
+              resourceGroupName: $(AZURE_RG_NAME)
+              imageToDeploy: $(imageName)

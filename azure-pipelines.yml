@@ -118,5 +118,5 @@ stages:
             inputs:
               azureSubscription: $(azureServiceConnection) # Azure ARM service connection
               containerAppName: $(AZURE_ACA_NAME)
-              resourceGroupName: $(AZURE_RG_NAME)
+#              resourceGroupName: $(AZURE_RG_NAME)
               imageToDeploy: $(imageName)

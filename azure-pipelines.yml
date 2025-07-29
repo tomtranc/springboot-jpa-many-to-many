@@ -37,9 +37,9 @@ stages:
         pool:
           vmImage: $(vmImageName)
         steps:
-          - task: Maven@3
+          - task: Maven@4
             inputs:
-              mavenPomFile: 'pom.xml'
+              mavenPOMFile: 'pom.xml'
               mavenOptions: '-Xmx3072m'
               javaHomeOption: 'JDKVersion'
               jdkVersionOption: '1.21'

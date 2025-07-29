@@ -107,11 +107,12 @@ stages:
   
                     # Run the new container
                     docker run --name $container_name -d -p 8080:8080 \
-                      -e DB_URL=$(DB_URL) \
-                      -e DB_USERNAME=$(DB_USERNAME) \
-                      -e DB_PASSWORD=$(DB_PASSWORD) \
-                      -e DB_DRIVER_CLASS_NAME=$(DB_DRIVER_CLASS_NAME) \
+                      -e DB_URL="$(DB_URL)" \
+                      -e DB_USERNAME="$(DB_USERNAME)" \
+                      -e DB_PASSWORD="$(DB_PASSWORD)" \
+                      -e DB_DRIVER_CLASS_NAME="$(DB_DRIVER_CLASS_NAME)" \
                       $(imageName)
+                  displayName: 'Deploy to VM'
 
       - job: DeployContainerApp
         displayName: Deploy to ACA

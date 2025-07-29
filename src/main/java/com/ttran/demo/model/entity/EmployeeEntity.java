@@ -47,8 +47,8 @@ public class EmployeeEntity extends BaseEntity {
     private String description;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "CUSTOMER_DEPARTMENT",
-            joinColumns = {@JoinColumn(name = "CUSTOMER_ID", referencedColumnName = "id")},
+    @JoinTable(name = "EMPLOYEE_DEPARTMENT",
+            joinColumns = {@JoinColumn(name = "EMPLOYEE_ID", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "DEPARTMENT_ID", referencedColumnName = "id")})
     @MapKeyColumn(name = "EMPLOYEE_TYPE") // creates 'EMPLOYEE_TYPE' column in the join table 'CUSTOMER_DEPARTMENT'
     @MapKeyEnumerated(EnumType.STRING)

@@ -106,6 +106,7 @@ stages:
                     docker rm $container_name || true
   
                     # Run the new container
+                    echo Running docker container $container_name
                     docker run --name $container_name -d -p 8080:8080 \
                       -e DB_URL="$(DB_URL)" \
                       -e DB_USERNAME="$(DB_USERNAME)" \
